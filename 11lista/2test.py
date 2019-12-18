@@ -8,7 +8,7 @@ ranking = [ ['java', 'Bill', 'Gates', 'bill@msd.com'], ['Python', 'Steve', 'Jobs
 sygnaly = { 'ondestroy': Gtk.main_quit }
 
 builder = Gtk.Builder()
-builder.add_from_file('wyklad1.glade')
+builder.add_from_file('2test.glade')
 
 # model
 model = builder.get_object('liststore1')
