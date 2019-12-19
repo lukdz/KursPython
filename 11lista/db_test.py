@@ -1,3 +1,5 @@
+import argparse
+from db import Database
 
 parser = argparse.ArgumentParser(description="edit library database")
 
@@ -47,17 +49,18 @@ else:
 rm test.db
 clear
 
-python db.py --add_user --name Bill --fullname Gates --email bill@msd.com
-python db.py --add_user --name Steve --fullname Jobs --email steve@mac.com
-python db.py --list_users
+python db_test.py --add_user --name Bill --fullname Gates --email bill@msd.com
+python db_test.py --add_user --name Steve --fullname Jobs --email steve@mac.com
+python db_test.py --list_users
 
-python db.py --add_book --title Narnia --author Lewis --year 1943
-python db.py --add_book --title Rings --author Tolkien --year 1983
+python db_test.py --add_book --title Narnia --author Lewis --year 1943
+python db_test.py --add_book --title Rings --author Tolkien --year 1983
 
-python db.py --borrow --title Narnia --name Steve
-python db.py --list_books
+python db_test.py --borrow --title Narnia --name Steve
+python db_test.py --list_books
 
-python db.py --back --title Narnia --name Steve
-python db.py --list_books
+python db_test.py --back --title Narnia --name Steve
+python db_test.py --list_books
+
 
 '''
