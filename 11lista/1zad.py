@@ -1,37 +1,75 @@
 import PySimpleGUI as sg
 from db import Database
 
-sg.change_look_and_feel('DefaultNoMoreNagging')    # Add a touch of color
+def draw_window(books, users):
+    sg.change_look_and_feel('DefaultNoMoreNagging')   # Add no color
 
-def draw_window(title, headings, ranking, new_rows, buttons):
-    header =  [[sg.Text('  ')] + [sg.Text(h, size=(14,1)) for h in headings]]
+    tab1_layout = [ [sg.Listbox(values=books, size=(30, 6), key='_LISTBOX_BOOKS_')],
+                    [sg.Button('Add book'), sg.Button('Edit book')] ]
 
-    input_rows = [[sg.InputText(col, size=(15,1), pad=(0,0)) for col in row] for row in ranking]
-    input_rows += new_rows
+    tab2_layout = [ [sg.Listbox(values=users, size=(30, 6), key='_LISTBOX_USERS_')],
+                    [sg.Button('Add user'), sg.Button('Edit user')] ]
 
-    layout = header + input_rows + buttons
+    layout = [[sg.TabGroup([[sg.Tab('Books', tab1_layout), sg.Tab('Users', tab2_layout)]])]]
 
-    return sg.Window(title, layout, font='Courier 12')
+    return sg.Window('Library Manager', layout)
 
-def draw_window_book(ranking):
-    title = 'Books'
-    headings = ['id', 'title', 'author', 'year', 'holder']
-    new_rows = [
-        [sg.Text('New book', size=(15,1), pad=(0,0))]
-        + [sg.InputText('', size=(15,1), pad=(0,0)) for col in range(len(headings)-2)]
-               ]
-    buttons = [[sg.Button('Users'), sg.Button('Add book'), sg.Button('Save books')]]
-    return draw_window(title, headings, ranking, new_rows, buttons)
+def new_book(db):
+    layout = [  [sg.Text('Title'), sg.InputText()],
+                [sg.Text('Author'), sg.InputText()],
+                [sg.Text('Year'), sg.InputText()],
+                [sg.Button('Ok'), sg.Button('Cancel')] ]
 
-def draw_window_user(ranking):
-    title = 'Users'
-    headings = ['id', 'name', 'fullname', 'email']
-    new_rows = [
-        [sg.Text('New user', size=(15,1), pad=(0,0))]
-        + [sg.InputText('', size=(15,1), pad=(0,0)) for col in range(len(headings)-1)]
-               ]
-    buttons = [[sg.Button('Books'), sg.Button('Add user')]]#, sg.Button('Save users')]]
-    return draw_window(title, headings, ranking, new_rows, buttons)
+    window = sg.Window('New book', layout)
+
+    event, values = window.read()
+    if event == 'Ok':
+        db.add_book(values[0], values[1], values[2])
+    window.close()
+
+def edit_book(db, book):
+    if book[4] is None:
+        default_value = ''
+    else:
+        default_value = get_users(db)[book[4]-1]
+    layout = [  [sg.Text('Title'), sg.InputText(book[1])],
+                [sg.Text('Author'), sg.InputText(book[2])],
+                [sg.Text('Year'), sg.InputText(book[3])],
+                [sg.Text('Holder'), sg.Combo(get_users(db), default_value=default_value)],
+                [sg.Button('Ok'), sg.Button('Cancel')] ]
+
+    window = sg.Window('Edit book', layout)
+
+    event, values = window.read()
+    if event == 'Ok':
+        db.edit_book(book[0], values[0], values[1], values[2], values[3][0])
+    window.close()
+
+def new_user(db):
+    layout = [  [sg.Text('Name'), sg.InputText()],
+                [sg.Text('Fullname'), sg.InputText()],
+                [sg.Text('E-mail'), sg.InputText()],
+                [sg.Button('Ok'), sg.Button('Cancel')] ]
+
+    window = sg.Window('New book', layout)
+
+    event, values = window.read()
+    if event == 'Ok': 
+        db.add_user(values[0], values[1], values[2])
+    window.close()
+
+def edit_user(db, user):
+    layout = [  [sg.Text('Name'), sg.InputText(user[1])],
+                [sg.Text('Fullname'), sg.InputText(user[2])],
+                [sg.Text('E-mail'), sg.InputText(user[3])],
+                [sg.Button('Ok'), sg.Button('Cancel')] ]
+
+    window = sg.Window('Edit book', layout)
+
+    event, values = window.read()
+    if event is 'Ok':
+        db.edit_user(user[0], values[0], values[1], values[2])
+    window.close()
 
 def get_books(db):
     return [x.to_list() for x in db.list_books()] 
@@ -39,68 +77,26 @@ def get_books(db):
 def get_users(db):
     return [x.to_list() for x in db.list_users()] 
 
-def save_users(db, values):
-    print( 'save_users' )
-    length = 4
-    gui = [ values[j] for j in range(len(values)//length*length, len(values)) ]
-    if gui != ['', '', '']:
-        print( 'Adding ', gui)
-        db.add_user(gui[0], gui[1], gui[2])
-
-def save_books(db, values):
-    print( 'save_books' )
-    length = 5
-    db_books = get_books(db)
-    for i in range(len(values)//length):
-        gui = [ values[i*length+j] for j in range(length) ]
-        if gui[4] != str(db_books[i][4]):
-            if gui[4] == '':
-                print( 'Back ')
-                db.back(gui[1], '')
-            elif gui[4] != 'None':
-                print( 'borrow ')
-                db.borrow(gui[1], gui[4])
-
 db = Database()
-ranking = get_books(db)
-window = draw_window_book(ranking)
+window = draw_window(get_books(db), get_users(db))
 
+# Event Loop to process "events" and get the "values" of the inputs
 while True:
     event, values = window.read()
     if event in (None, 'Cancel'):   # if user closes window or clicks cancel
         break
-    if event == 'Books':
-        window1 = draw_window_book(get_books(db))
-        ranking = get_books(db)
-        window.Close()
-        window = window1
-    if event == 'Users':
-        ranking = get_users(db)
-        window1 = draw_window_user(ranking)
-        window.Close()
-        window = window1
-    if event == 'Add user':
-        l = len(values)
-        db.add_user(values[l-3], values[l-2], values[l-1])
-        ranking = get_users(db)
-        window1 = draw_window_user(ranking)
-        window.Close()
-        window = window1
-    if event == 'Add book':
-        l = len(values)
-        db.add_book(values[l-3], values[l-2], values[l-1])
-        ranking = get_books(db)
-        window1 = draw_window_book(ranking)
-        window.Close()
-        window = window1
-    if event == 'Save user':
-        save_users(db, values)
-    if event == 'Save books':
-        save_books(db, values)
-        ranking = get_books(db)
-        window1 = draw_window_book(ranking)
-        window.Close()
-        window = window1
+    if event == 'Add book':   
+        new_book(db)
+        window.Element('_LISTBOX_BOOKS_').Update(values=get_books(db))
+    if event == 'Edit book':   
+        edit_book(db, values['_LISTBOX_BOOKS_'][0])
+        window.Element('_LISTBOX_BOOKS_').Update(values=get_books(db))
+    if event == 'Add user':   
+        new_user(db)
+        window.Element('_LISTBOX_USERS_').Update(values=get_users(db))
+    if event == 'Edit user':   
+        edit_user(db, values['_LISTBOX_USERS_'][0])
+        window.Element('_LISTBOX_USERS_').Update(values=get_users(db))
+    print('Library Manager ', values)
 
-
-
+window.close()

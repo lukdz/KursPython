@@ -54,6 +54,25 @@ class Database():
         session.add(new_book)
         session.commit()
 
+    def edit_user(self, id, name, fullname, email):
+        Session = sessionmaker(bind=self.engine)
+        session = Session()
+        user = session.query(User).filter_by(id=id).first() 
+        user.name = name
+        user.fullname = fullname
+        user.email = email
+        session.commit()
+
+    def edit_book(self, id, title, author, year, holder):
+        Session = sessionmaker(bind=self.engine)
+        session = Session()
+        book = session.query(Book).filter_by(id=id).first() 
+        book.title = title
+        book.author = author
+        book.year = year
+        book.holder = holder
+        session.commit()
+
     def list_books(self):
         Session = sessionmaker(bind=self.engine)
         session = Session()
