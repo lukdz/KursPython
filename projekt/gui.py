@@ -1,34 +1,23 @@
 import PySimpleGUI as sg
 from get import Getter
+from gui_list import GuiList
 
-def draw_menu():
+def draw_menu(listbox_pages):
     sg.change_look_and_feel('DefaultNoMoreNagging')   # Add a touch of color
     # All the stuff inside your window.
     layout = [  [sg.Text('Download list')],
-                [sg.Listbox(values=[], size=(30, 10), key='_LISTBOX_PAGES_')],
-                [sg.Text('Add new page'), sg.InputText(key='_NEW_PAGE_')],
-                [sg.Button('Ok'), sg.Button('Cancel')] ]
+                [sg.Listbox(values=listbox_pages, size=(50, 10), key='_LISTBOX_PAGES_')],
+                [sg.Text('Add new page'), 
+                sg.InputText(default_text = 'http://google.com', key='_NEW_PAGE_', size=(37, 1))],
+                [sg.Button('Ok', bind_return_key=True), sg.Button('Cancel')] ]
 
     # Create the Window
     return sg.Window('Simple downloader', layout)
 
-window = draw_menu()
-listbox_pages = []
+
+listbox_pages = GuiList()
+window = draw_menu(listbox_pages.get_iterable())
 g = Getter()
-
-
-class Kolejka():
-    def __init__(self):
-        self.counter = 0
-        self.list = []
-    def add(self, page, status):
-        self.counter += 1
-        self.list.append((page, status))
-        return self.counter 
-    def set_status(self, id, status):
-        (page, _) = self.list[id]
-        self.list[id] = (page, status)
-
 
 # Event Loop to process "events" and get the "values" of the inputs
 while True:
@@ -38,17 +27,20 @@ while True:
         print('Closed')
         break
     if event in 'Ok':
-        g.put(values['_NEW_PAGE_'])
         print('You entered', values['_NEW_PAGE_'])
-        listbox_pages.append((values['_NEW_PAGE_'], 'waiting'))
-        window.Element('_LISTBOX_PAGES_').Update(values=listbox_pages,set_to_index=1)
+        counter = listbox_pages.add(values['_NEW_PAGE_'], 'waiting')
+        g.put((counter, values['_NEW_PAGE_']))
+        values=listbox_pages.get_iterable()
+        window.Element('_LISTBOX_PAGES_').Update(values=values,set_to_index=1)
         window.Element('_NEW_PAGE_').Update('')
     # if event == sg.TIMEOUT_KEY:
     #     print("Nothing happened")
     update = g.get()
     if update is not None:
         print('update', update)
+        (id, status) = update
+        listbox_pages.set_status(id, status)
+        values=listbox_pages.get_iterable()
+        window.Element('_LISTBOX_PAGES_').Update(values=values,set_to_index=1)
 window.close()
 
-
-##################

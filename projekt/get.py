@@ -1,18 +1,7 @@
 import queue
 import threading
-import time
+from worker import worker
 
-def worker(q,s):
-        while True:
-            item = q.get()
-            if item is None:
-                break
-            print('Downloading', item)
-            time.sleep( 5 )
-            print('Downloaded ', item)
-            s.put('Downloaded ', item)
-            # do_work(item)
-            q.task_done()
 
 class Getter:
     def __init__(self):
