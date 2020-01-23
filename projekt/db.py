@@ -31,7 +31,7 @@ def add_url(url, status):
     session.add(new_url)
     session.commit()
     id = new_url.id
-    # session.close()
+    session.close()
     return id
 
 
@@ -41,7 +41,7 @@ def list_urls():
     urls = []
     for url in session.query(Url):
         urls.insert(0, url )
-    # session.close()
+    session.close()
     return urls
 
 def update_status(id, status):
@@ -50,4 +50,4 @@ def update_status(id, status):
     url = session.query(Url).filter_by(id=id).first() 
     url.status = status
     session.commit()
-    # session.close()
+    session.close()

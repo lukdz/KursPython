@@ -1,0 +1,38 @@
+lukdz@lukdz-lenovo-u:projekt$ python3 gui.py 
+You entered http://google.com
+update (19, 'Downloading')
+Exception during reset or similar
+Traceback (most recent call last):
+  File "/home/lukdz/anaconda3/lib/python3.7/site-packages/sqlalchemy/pool.py", line 709, in _finalize_fairy
+    fairy._reset(pool)
+  File "/home/lukdz/anaconda3/lib/python3.7/site-packages/sqlalchemy/pool.py", line 880, in _reset
+    pool._dialect.do_rollback(self)
+  File "/home/lukdz/anaconda3/lib/python3.7/site-packages/sqlalchemy/engine/default.py", line 459, in do_rollback
+    dbapi_connection.rollback()
+sqlite3.ProgrammingError: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 140067096266560 and this is thread id 140066968151808.
+Exception closing connection <sqlite3.Connection object at 0x7f63e1e53110>
+Traceback (most recent call last):
+  File "/home/lukdz/anaconda3/lib/python3.7/site-packages/sqlalchemy/pool.py", line 709, in _finalize_fairy
+    fairy._reset(pool)
+  File "/home/lukdz/anaconda3/lib/python3.7/site-packages/sqlalchemy/pool.py", line 880, in _reset
+    pool._dialect.do_rollback(self)
+  File "/home/lukdz/anaconda3/lib/python3.7/site-packages/sqlalchemy/engine/default.py", line 459, in do_rollback
+    dbapi_connection.rollback()
+sqlite3.ProgrammingError: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 140067096266560 and this is thread id 140066968151808.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/lukdz/anaconda3/lib/python3.7/site-packages/sqlalchemy/pool.py", line 314, in _close_connection
+    self._dialect.do_close(connection)
+  File "/home/lukdz/anaconda3/lib/python3.7/site-packages/sqlalchemy/engine/default.py", line 465, in do_close
+    dbapi_connection.close()
+sqlite3.ProgrammingError: SQLite objects created in a thread can only be used in that same thread. The object was created in thread id 140067096266560 and this is thread id 140066968151808.
+libpng warning: iCCP: known incorrect sRGB profile
+libpng warning: iCCP: known incorrect sRGB profile
+Loading page (1/2)
+Printing pages (2/2)                                               
+Warning: Received createRequest signal on a disposed ResourceObject's NetworkAccessManager. This might be an indication of an iframe taking too long to load.
+Done                                                           
+update (19, 'Downloaded')
+Closed
