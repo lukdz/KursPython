@@ -13,7 +13,7 @@ class Url(Base):
 
     def __str__(self):
         return "%s %s" % (
-            self.url.ljust(30), self.status)
+            self.url.ljust(25), self.status)
     def __repr__(self):
         return "<Url(url='%s', status='%s')>" % (
             self.url, self.status)
@@ -30,7 +30,9 @@ def add_url(url, status):
     new_url = Url(url=url, status=status)
     session.add(new_url)
     session.commit()
-    session.close()
+    id = new_url.id
+    # session.close()
+    return id
 
 
 def list_urls():
@@ -38,8 +40,8 @@ def list_urls():
     session = Session()
     urls = []
     for url in session.query(Url):
-        urls.append( url )
-    session.close()
+        urls.insert(0, url )
+    # session.close()
     return urls
 
 def update_status(id, status):
@@ -48,4 +50,4 @@ def update_status(id, status):
     url = session.query(Url).filter_by(id=id).first() 
     url.status = status
     session.commit()
-    session.close()
+    # session.close()

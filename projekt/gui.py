@@ -31,7 +31,7 @@ while True:
         counter = listbox_pages.add(values['_NEW_PAGE_'], 'waiting')
         g.put((counter, values['_NEW_PAGE_']))
         values=listbox_pages.get_iterable()
-        window.Element('_LISTBOX_PAGES_').Update(values=values,set_to_index=1)
+        window.Element('_LISTBOX_PAGES_').Update(values=values)
         window.Element('_NEW_PAGE_').Update('')
     # if event == sg.TIMEOUT_KEY:
     #     print("Nothing happened")
@@ -41,6 +41,6 @@ while True:
         (id, status) = update
         listbox_pages.set_status(id, status)
         values=listbox_pages.get_iterable()
-        window.Element('_LISTBOX_PAGES_').Update(values=values,set_to_index=1)
+        window.Element('_LISTBOX_PAGES_').Update(values=values)
 window.close()
 

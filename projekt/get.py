@@ -12,7 +12,7 @@ class Getter:
         self.s = queue.Queue()
         self.threads = []
         for i in range(self.num_worker_threads):
-            t = threading.Thread(target=worker, args=(self.q,self.s))
+            t = threading.Thread(target=worker, args=(self.q,self.s),name=str(i))
             t.start()
             self.threads.append(t)
     def put(self, item):

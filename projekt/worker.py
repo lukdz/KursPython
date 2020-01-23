@@ -16,19 +16,19 @@ def get_title(url):
     return title
 
 def worker(q,s):
-        while True:
-            item = q.get()
-            if item is None:
-                break
-            (id, url) = item
-            s.put((id, 'Downloading'))
-            try:
-                title = get_title(url)
-                download(url, 'data/'+title+'.pdf')
-                s.put((id, 'Downloaded'))
-            except  Exception as e:
-                s.put((id, str(e)))
-                # print("An exception occurred")
-            finally:
-                q.task_done()
+    while True:
+        item = q.get()
+        if item is None:
+            break
+        (id, url) = item
+        s.put((id, 'Downloading'))
+        try:
+            title = get_title(url)
+            download(url, 'data/'+title+'.pdf')
+            s.put((id, 'Downloaded'))
+        except  Exception as e:
+            s.put((id, str(e)))
+            # print("An exception occurred")
+        finally:
+            q.task_done()
 
