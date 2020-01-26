@@ -5,7 +5,11 @@ import requests
 import re
 
 def download(url, file):
-    pdfkit.from_url(url, file)
+    options = {
+    'quiet': '',
+    'javascript-delay': 1000,
+    }
+    pdfkit.from_url(url, file, options=options)
 
 def get_title(url):
     #This retrieves the webpage content
@@ -26,9 +30,10 @@ def worker(q,s):
             title = get_title(url)
             download(url, 'data/'+title+'.pdf')
             s.put((id, 'Downloaded'))
+        except OSError:
+            s.put((id, 'Downloaded'))
         except  Exception as e:
-            s.put((id, str(e)))
-            # print("An exception occurred")
+            s.put((id, e))
         finally:
             q.task_done()
 

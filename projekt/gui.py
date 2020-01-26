@@ -3,6 +3,10 @@ from get import Getter
 from db import add_url, list_urls, update_status
 
 def draw_menu():
+    """
+        **Create application**
+        This creates an instance of the TeacherAPI and runs it
+    """
     sg.change_look_and_feel('DefaultNoMoreNagging')   # Add a touch of color
     # All the stuff inside your window.
     layout = [  [sg.Text('Download list')],
