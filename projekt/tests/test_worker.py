@@ -2,6 +2,7 @@ import unittest
 import types
 import queue
 
+import context
 from worker import worker, download, get_title
 
 class TestGetter(unittest.TestCase):

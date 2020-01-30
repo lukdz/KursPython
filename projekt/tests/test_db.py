@@ -1,6 +1,7 @@
 import unittest
 import types
 
+import context
 from db import add_url, list_urls, update_status
 
 class TestDB(unittest.TestCase):

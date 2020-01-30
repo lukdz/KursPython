@@ -1,6 +1,7 @@
 import unittest
 import types
 
+import context
 from get import Getter
 
 class TestGetter(unittest.TestCase):
